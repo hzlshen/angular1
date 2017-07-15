@@ -1,0 +1,32 @@
+<html ng-app='myApp'>
+
+<head>
+
+    <title>ng-show实例</title>
+
+</head>
+
+<body ng-controller='ShowController'>
+
+<button ng-click="toggleMenu()">Toggle Menu</button>
+
+<ul ng-show='menuState.show'>
+
+    <li>Stun</li>
+
+    <li>Disintegrate</li>
+
+    <li>Erase from history</li>
+
+</ul>
+
+<script src="js/angular.js"></script>
+
+<script>var myApp=angular.module('myApp',[])
+myApp.controller('ShowController', function($scope) {$scope.menuState={show: false}
+    $scope.toggleMenu=function() {$scope.menuState.show=!$scope.menuState.show;}});
+</script>
+
+</body>
+
+</html>

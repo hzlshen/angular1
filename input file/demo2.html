@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <style type="text/css">
+        ._box
+        {
+            width: 119px;
+            height: 37px;
+            background-color: #53AD3F;
+            background-image: url(images/bg.png);
+            background-repeat: no-repeat;
+            background-position: 0 0;
+            background-attachment: scroll;
+            line-height: 37px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+        }
+        .none
+        {
+            width: 0px;
+            height: 0px;
+            display: none;
+        }
+    </style>
+    <title>js 实现 input file 文件上传 /></title>
+</head>
+<body>
+<form id="form1" runat="server" method="post" enctype="multipart/form-data">
+    <div>
+        <div class="_box">选择图片</div>
+    </div>
+    <div class="none">
+        <input type="file" name="_f" id="_f" />
+    </div>
+</form>
+</body>
+</html>
+<script type="text/javascript">
+    jQuery(function () {
+        $("._box").click(function () {
+            return $("#_f").click();
+        });
+    });
+</script> 

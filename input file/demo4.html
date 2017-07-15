@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>原生</title>
+    <script src="js/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+
+
+<input type="file" id="uploadPic" name="file">
+<label for="uploadPic" id="fileBtn">
+    +
+    <img class="showPic" src="" />
+</label>
+<span class="tip">请上传图片，大小在2M以内<br/>(图片类型可为jpg,jepg,png,gif,bmp)<br/>推荐图片比例为640*400</span>
+<!--<input type="text" name="turnUrl" class="turnUrl">-->
+<canvas id="uploadImg" style="display:none"></canvas>
+
+<script>
+    $("#uploadPic").on('change', function(event) {
+        event.preventDefault();
+        console.log($(this)[0].files);
+        var file = $(this)[0].files[0];
+        if(file.size>2097152){
+            alert("上传图片请小于2M");
+            return false;
+        }        if (!/image\/\w+/.test(file.type)) {
+            alert("文件必须为图片！");
+            return false;
+        }
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(e) {
+            createCanvas(this.result);
+        }
+    });
+
+    function createCanvas(src) {
+        var canvas = document.getElementById("uploadImg");
+        var cxt = canvas.getContext('2d');
+        canvas.width = 640;
+        canvas.height = 400;
+        var img = new Image();
+        img.src = src;
+        img.onload = function() {
+            // var w=img.width;
+            // var h=img.height;
+            // canvas.width= w;
+            // canvas.height=h;
+            cxt.drawImage(img, 0, 0,640,400);
+            //cxt.drawImage(img, 0, 0);
+            $(".showPic").show().attr('src', canvas.toDataURL("image/jpeg", 0.9));
+            $.ajax({
+                url: "/front/uploadByBase64.do",
+                type: "POST",
+                data: {
+                    "imgStr": canvas.toDataURL("image/jpeg", 0.9).split(',')[1]
+                },
+                success: function(data) {
+                    console.log(data);
+                    $(".showPic").show().attr('data-url',"/"+ data.url);
+                }
+            });
+        }
+    }
+</script>
+
+</body>
+</html>

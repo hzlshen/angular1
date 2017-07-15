@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html ng-app="MrTrustApp.controllers">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/angular.js"></script>
+</head>
+<body ng-controller="AuthSendVerifyMessageCtrl">
+
+<div class="top_10 input_box">
+    <label class="item item-input">
+        <i class="icon ion-chatbubble-working placeholder-icon"></i>
+        <input type="tel" placeholder="请输入短信验证码" autofocus ng-model="data.verifyMessage">
+    </label>
+
+    <input type="button" class="button retrieve font_16_14 button-calm white_text"
+           ng-disabled="data.retrieveDisabled"
+           ng-value="data.retrieveText" ng-model="data.retrieveText" ng-click="action.retrieve()">
+</div>
+
+
+<script>
+    angular.module('MrTrustApp.controllers')
+
+            .controller('AuthSendVerifyMessageCtrl', function ($scope, StateGo, $stateParams, $interval, $ionicLoading, $timeout) {
+
+                //定义数据
+                $scope.data = {
+
+                    retrieveDisabled: true,   //重新获取按钮默认不可用
+
+                    isChecked: true,         //接受协议默认勾选
+
+                    disabled: true,         //注册/登录按钮默认不可用
+
+                    retrieveText: '重新获取(59s)', //重新获取倒计时文字
+
+                    isLogin: false         //true:登录 , false:注册 (是否为登录)
+
+                };
+
+//显示号码部分数字
+                $scope.data.showPhoneNumber = phoneNumber.slice(0, 3) + '****' + phoneNumber.slice(7);
+//倒计时样式控制
+                function countdown() {
+                    var second = 59,
+                            timePromise = undefined;
+
+                    timePromise = $interval(function () {
+                        if (second < 1) {
+
+                            $scope.data.retrieveDisabled = false;
+
+                            $interval.cancel(timePromise);
+                            timePromise = undefined;
+
+                            $scope.data.retrieveText = "重新获取";
+                            second = 59;
+
+                        } else {
+                            $scope.data.retrieveText = '重新获取(' + second + 's)';
+
+                            second--;
+
+                            $scope.data.retrieveDisabled = true;
+
+
+                        }
+                    }, 1000, 100);
+                }
+
+                countdown();
+
+
+                //重新获取验证码
+                $scope.action.retrieve = function () {
+                    countdown();
+                    return false;
+                    <!--  TODO: 告诉后台,给用户发送验证码   -->
+
+                };
+            });
+</script>
+</body>
+</html>

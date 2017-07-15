@@ -1,0 +1,52 @@
+<html  ng-app="myApp">
+<head>
+    <title>测试_短信验证码</title>
+    <meta charset="utf-8" />
+</head>
+<script src="js/angular.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css"/>
+<body>
+<!--<timerbutton show-timer="false">获取验证码</timerbutton>-->
+<button ng-click="onClick()" show-timer="false" class="btn btn-primary" ng-disabled="timer"><span ng-if="showTimer">{{ timerCount
+    }}</span>{{text}}</button>
+</body>
+</html>
+<script>
+    angular.module('myApp',[]).directive('timerbutton', function($timeout, $interval){
+        return {
+            restrict: 'A',
+            scope: {
+                showTimer: '=',
+                timeout: '='
+            },
+            link: function(scope, element, attrs){
+                scope.timer = false;
+                scope.timeout = 60000;
+                console.log("1-进来了");
+                scope.timerCount = scope.timeout / 1000;
+                scope.text = "获取验证码";
+
+                scope.onClick = function(){
+                    console.log("2-进来了");
+                    scope.showTimer = true;
+                    scope.timer = true;
+                    scope.text = "秒后重新获取";
+                    var counter = $interval(function(){
+                        scope.timerCount = scope.timerCount - 1;
+                        console.log("3-进来了");
+                    }, 1000);
+
+                    $timeout(function(){
+                        console.log("进来了");
+                        scope.text = "获取验证码";
+                        scope.timer = false;
+                        $interval.cancel(counter);
+                        scope.showTimer = false;
+                        scope.timerCount = scope.timeout / 1000;
+                    }, scope.timeout);
+                }
+            }/*,
+            template: '<button ng-click="onClick()" class="btn btn-primary" ng-disabled="timer"><span ng-if="showTimer">{{ timerCount }}</span>{{text}}</button>'*/
+        };
+    });
+</script>
