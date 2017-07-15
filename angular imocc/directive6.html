@@ -1,0 +1,34 @@
+<!doctype html>
+<html ng-app="myModule">
+<head>
+    <title>独立scope</title>
+    <meta charset="utf-8">
+</head>
+<body>
+
+    <form ng-submit="save()" ng-controller="myCtrl">
+        <input type="text" name="userName" ng-model="user.userName" required/>
+        <input type="password" name="password" ng-model="user.password" required/>
+        <input type="submit" ng-disabled="myForm.$invalid"/>
+    </form>
+
+
+<script src="js/angular-1.3.0.js"></script>
+<script>
+    var myModule=angular.module("myModule", []);
+    myModule.controller("myCtrl",function ($scope) {
+        $scope.user={
+            userName:'daomagaf',
+            password : ''
+        };
+        $scope.save= function () {
+            alert("保存数据！");
+        }
+    });
+
+
+
+
+</script>
+</body>
+</html>

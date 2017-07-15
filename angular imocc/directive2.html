@@ -1,0 +1,54 @@
+<!doctype html>
+<html ng-app="myModule">
+<head>
+    <title>双向数据绑定</title>
+    <meta charset="utf-8">
+</head>
+<body>
+
+    <div ng-controller="myCtrl">
+        <loader howToLoad="loadData()">
+            滑动加载
+        </loader>
+    </div>
+
+    <div ng-controller="myCtrl2">
+        <loader howToLoad="loadData2()">
+            滑动加载
+        </loader>
+    </div>
+
+
+<script src="js/angular-1.3.0.js"></script>
+<script>
+    var myModule=angular.module("myModule", []);
+    myModule.controller("myCtrl", ['$scope', function($scope){
+       $scope.loadData= function () {
+           console.log("数据加载中……");
+       }
+    }]);
+
+    myModule.controller("myCtrl2", ['$scope', function($scope){
+        $scope.loadData2= function () {
+            console.log("数据加载中……222");
+        }
+    }]);
+
+
+    //定义指令就是为了复用
+    myModule.directive("loader", function () {
+        return {
+            restrict:"AE",
+            link: function (scope,element,attrs) {
+                element.bind("mouseenter", function () {
+                    //scope.loadData();
+                    //scope.$apply("loadData()");
+                    //注意这里的坑 howToLoad会被转换成小写的howtoload
+                    scope.$apply(attrs.howtoload);
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

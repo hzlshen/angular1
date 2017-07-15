@@ -1,0 +1,28 @@
+<!doctype html>
+<html ng-app="myModule">
+<head>
+    <title>独立scope</title>
+    <meta charset="utf-8">
+</head>
+<body>
+
+    <hello></hello>
+    <hello></hello>
+    <hello></hello>
+    <hello></hello>
+
+
+<script src="js/angular-1.3.0.js"></script>
+<script>
+    var myModule=angular.module("myModule", []);
+    myModule.directive("hello",function(){
+        return {
+            restrict:'AE',
+            scope:{},
+            template:'<div><input type="text" ng-model="userName" />{{userName}}</div>',
+            replace:true
+        }
+    });
+</script>
+</body>
+</html>

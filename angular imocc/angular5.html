@@ -1,0 +1,35 @@
+<!doctype html>
+<html ng-app>
+<head>
+    <meta charset="utf-8">
+    <style>
+        div,li{
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+<div class="show-scope-demo">
+    <div ng-controller="GreetCtrl">
+        Hello {{name}}!
+    </div>
+    <div ng-controller="ListCtrl">
+        <ol>
+            <li ng-repeat="name in names">
+                {{name}} from {{department}}
+            </li>
+        </ol>
+    </div>
+</div>
+<script src="js/angular-1.3.0.js"></script>
+<script>
+   function GreetCtrl($scope,$rootScope){//根作用域
+       $scope.name='Word';
+       $rootScope.department='Angular';
+   }
+    function ListCtrl($scope){
+        $scope.names=['tom','king','mary','voja'];
+    }
+</script>
+</body>
+</html>
