@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>AngularJS学习</title>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+</head>
+<body>
+<div ng-controller="myCtrl1">
+    <button ng-click = "onclick1()">请点击我1</button>
+</div>
+<div ng-controller="myCtrl2">
+    <button ng-click = "onclick2()">请点击我2</button>
+</div>
+</body>
+<script type="text/javascript">
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl1', function($scope, testProvider) {
+        $scope.onclick1 = function() {
+            testProvider("林炳文Evankaka");
+        };
+    });
+    app.controller('myCtrl2', function($scope , testProvider) {
+        $scope.onclick2 = function() {
+            testProvider("我到底是谁");
+        };
+    });
+    app.provider('testProvider', function(){
+        console.log('instance testProvider');
+        var f = function(name) {
+            alert("Hello, " + name);
+        };
+        this.$get = function(){ //一定要有！
+            return f;
+        };
+    });
+</script>
+</html> 

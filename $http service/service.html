@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>AngularJS学习</title>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+</head>
+<body>
+<div ng-controller="myCtrl">
+    <p>{{ output1 }}</p>
+    <p>{{ output2 }}</p>
+    <p>{{ output3 }}</p>
+</div>
+<div ng-controller="myCtrl2">
+</div>
+</body>
+<script type="text/javascript">
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope,testService, testFactory, testProvider) {
+        $scope.output1 = testService.lable;
+        $scope.output2 = testFactory.lable();
+        $scope.output3 = testProvider;
+    });
+    app.controller('myCtrl2', function($scope,testService, testFactory, testProvider) {
+    });
+    app.service('testService',function(){
+        console.log('instance testService');
+        this.lable = 'this is service';
+    });
+    app.factory('testFactory', function () {
+        console.log('instance testFactory');
+        return{
+            lable: function(){
+                return 'this is factory';
+            }
+        };
+    });
+    app.provider('testProvider', function(){
+        console.log('instance testProvider');
+        this.$get = function(){
+            return 'this is provider';
+        };
+    });
+</script>
+</html> 

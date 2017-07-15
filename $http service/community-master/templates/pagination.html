@@ -1,0 +1,21 @@
+<div class="text-center">
+	<nav>
+	  	<ul class="pagination">
+		    <li ng-class="{disabled:currentPage==1}">
+		    	<a href="javascript:void(0)" ng-click="getPrevPage()">前一页</a>
+		    </li>
+		    <li class="disabled" ng-show="currentPage > 3">
+		    	<a href="#">..</a>
+		    </li>
+		    <li ng-repeat="i in pageNumArr" ng-class="{active:currentPage=={{i}}}">
+		    	<a id="page_{{i}}" href="javascript:void(0)" ng-click="setPagination(i)" ng-show="i < currentPage+5">{{$index+1}}</a>
+	    	</li>
+		    <li class="disabled" ng-show="pageSize > 5">
+		    	<a href="#">..</a>
+		    </li>
+		    <li ng-class="{disabled:currentPage==pageSize}">
+		    	<a href="javascript:void(0)" ng-click="getNextPage()">后一页</a>
+		    </li>
+	  	</ul>
+	</nav>
+</div>

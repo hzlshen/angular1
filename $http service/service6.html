@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="zh" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>AngularJS学习</title>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+</head>
+<body>
+<div ng-controller="myCtrl1">
+    <button ng-click="onclick1()">请点击我1</button>
+</div>
+<div ng-controller="myCtrl2">
+    <button ng-click="onclick2()">请点击我2</button>
+</div>
+</body>
+<script type="text/javascript">
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl1', function($scope) {
+        /* $scope.onclick1 = function() {
+         test("林炳文Evankaka");
+         };*/
+    });
+    app.controller('myCtrl2', function($scope) {
+        /* $scope.onclick2 = function() {
+         test("我到底是谁");
+         };*/
+    });
+    app.provider('test', function() {
+        console.log('instance test');
+        var f = function(name) {
+            alert("Hello, " + name);
+        };
+        this.$get = function() { //一定要有！
+            return f;
+        };
+    });
+    /*app.config(function(testProvider) {
+     testProvider('I am config');
+     });*/
+    app.config(function($provide) {
+        $provide.provider('greeting', function() {
+            this.$get = function() {
+                return function(name) {
+                    alert("Hello," + name);
+                };
+            };
+        });
+        /* greetingProvider('ff');*/
+    });
+</script>
+</html> 

@@ -1,0 +1,45 @@
+<div class="sidebar">
+	<div class="console-button">
+		<div class="vote-btn vote-btn-up" ng-click="addVote(answer)" data-toggle="tooltip" data-placement="top" title="答案对人有帮助，有参考价值"></div>
+		<div class="vote-count" ng-bind="answer.voteNum"></div>
+		<div class="vote-btn vote-btn-down" ng-click="subVote(answer)" data-toggle="tooltip" data-placement="bottom" title="答案没帮助，是错误的答案，答非所问"></div>
+	</div>
+	<div class="accepted-flag" ng-show="solved">采纳</div>
+</div>
+<div class="ml-60">
+	<div class="ahthor">
+		<a class="custom-a-none userName" href="#/community/userInfo/{{answer.userId}}">{{answer.userId}}</a>
+		<span>&nbsp;&nbsp;{{answer.answerDate}}&nbsp;&nbsp;</span>回答
+	</div>
+	<div class="answer-content">
+		<answer-content content='answer.content'></answer-content>
+	</div>
+	<div ng-controller="CommentsController">
+		<button class="btn btn-success font-smaller" ng-show="!solved && hasRight" ng-click="acceptAnswer()">√采纳该答案</button>
+		<button class="btn btn-info font-smaller" ng-show="solved && hasRight" ng-click="cancelAccept()">取消采纳</button>
+		<a href="javascript:void(0)" ng-click="checkComment()" class="comment-btn">{{comments.length}} 评论</a>
+		<div ng-show="showComments" class="comment">
+			<div ng-repeat="comment in comments">
+				<small>回复:</small><a ng-href="#/community/userInfo/{{comment.commentedUser}}" class="custom-a-none comment-userName">{{comment.commentedUser}}</a>
+				<p ng-bind="comment.content"></p>
+				<span>{{$index + 1 | floorFilter}}</span>
+				<a ng-href="#/community/userInfo/{{comment.userId}}" class="custom-a-none comment-userName">{{comment.userId}}</a>
+				<span>{{comment.commentDate | date:"yyyy-mm-dd" | commentDateFilter}}</span>
+				<small class="reply" ng-click="replyClick(comment)">回复</small>
+				<div class="comment-line"></div>
+			</div>
+			<div ng-show="showReply">
+				<small>回复:<span class="userName">{{newComment.commentedUser}}</span><span class="closeIcon" ng-click="deleteUser()"> [×]</span></small>
+			</div>
+			<div class="row">
+				<div class="col-md-10">
+					<textarea class="comment-input" ng-model="newComment.content"></textarea>
+				</div>
+				<div class="col-md-2">
+					<button id="submitComment" class="btn btn-primary" ng-click="submitComment()">提交评论</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="line"></div>

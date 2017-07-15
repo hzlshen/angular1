@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/angular.min.js"></script>
+    <script src="src/app2.js"></script>
+    <script src="src/service2.js"></script>
+    <script src="src/controller.js"></script>
+</head>
+<body ng-app="Hello">
+
+    <div style="background: yellow" ng-controller="worldCtrl">
+        {{author.name}}<br/>
+        {{author.sex}}
+        <button ng-click="update()">同步数据</button>
+    </div>
+
+    <div ng-controller="helloCtrl">
+        {{author.name}}<br/>
+        {{author.sex}}
+        <button ng-click="updatePublic()">更新公有变量</button>
+    </div>
+</body>
+</html>

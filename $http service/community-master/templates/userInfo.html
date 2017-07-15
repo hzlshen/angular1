@@ -1,0 +1,92 @@
+<div class="warp">
+	<div class="header">
+		<pub-nav></pub-nav>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2">
+					<div class="userHeadImg">
+						<img ng-src="{{userInfo.bigImg}}"></img>
+					</div>
+				</div>
+				<div class="col-md-7">
+					<h3>{{userInfo.userId}}</h3>
+					<h4>声望值：<strong>{{userInfo.popularity}}</strong></h4>
+					<h4>个人签名：<span ng-show="!canEditSignature">{{userInfo.signature}}</span>
+						<input id="signatureInput" ng-blur="signatureInputBlur()" ng-show="canEditSignature" ng-model='userInfo.signature'></input>
+					</h4>
+				</div>
+				<div class="col-md-3 pt-30">
+					<button class="btn btn-success" ng-show="showFocus && canFocus" ng-click="setFocus()">+加关注</button>
+					<button class="btn btn-success" ng-show="showFocus && !canFocus" ng-click="cancelFocus()">取消关注</button>
+					<button class="btn btn-primary" ng-show="userInfo.userId == nav_userName" ng-click="uploadImg()">上传图片</button>
+					<button class="btn btn-success" ng-show="userInfo.userId == nav_userName" ng-click="editSignature()">编辑签名</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9" ng-controller="UserQuestionsController">
+				<div class="btn-group cus-tab-title">
+				 	<div class="btn" ng-class="{'btn-warning':activedTabId==askTabId,'btn-success':activedTabId!=askTabId}" type="button" ng-click="tabClick(askTabId)">提问</div>
+				 	<div class="btn" ng-class="{'btn-warning':activedTabId==answerTabId,'btn-success':activedTabId!=answerTabId}" type="button" ng-click="tabClick(answerTabId)">回答</div>
+				 	<div class="btn" ng-class="{'btn-warning':activedTabId==articleTabId,'btn-success':activedTabId!=articleTabId}" type="button" ng-click="tabClick(articleTabId)">分享</div>
+				 	<div class="btn" ng-class="{'btn-warning':activedTabId==collectTabId,'btn-success':activedTabId!=collectTabId}" type="button" ng-click="tabClick(collectTabId)">收藏</div>
+				</div>
+				<hr class="mb-0">
+				<div ng-show="activedTabId==askTabId">
+					<div class="question-list-item" ng-repeat="question in createdQuestions">
+						<question-item></question-item>
+					</div>
+					<!-- <pagination id="1" get-page-size-action="getAskQuesPageInfo" change-page="changePage(askTabId,curPageNum)"></pagination> -->
+				</div>
+				<div ng-show="activedTabId==answerTabId">
+					<div class="question-list-item" ng-repeat="question in answers">
+						<question-item></question-item>
+					</div>
+					<!-- <pagination id="1" get-page-size-action="getAskQuesPageInfo" change-page="changePage(askTabId,curPageNum)"></pagination> -->
+				</div>
+				<div ng-show="activedTabId==articleTabId">
+					<div class="question-list-item" ng-repeat="article in articles">
+						<article-item></article-item>
+					</div>
+					<!-- <pagination id="1" get-page-size-action="getAskQuesPageInfo" change-page="changePage(askTabId,curPageNum)"></pagination> -->
+				</div>
+				<div ng-show="activedTabId==collectTabId">
+					<div class="question-list-item" ng-repeat="article in collects">
+						<article-item></article-item>
+					</div>
+					<!-- <pagination id="2" get-page-size-action="getCollectedQuesPageInfo" change-page="changePage(collectTabId,curPageNum)"></pagination> -->
+				</div>
+			</div>
+			<div class="col-md-3">
+				<h3>Ta的关系</h3>
+				<hr>
+				<div>
+					<p>关注:<span class="person-num">{{focuses.length}}</span>人</p>
+					<ul class="list-inline">
+						<li class="mb-10" ng-repeat="focus in focuses">
+							<a href="#/community/userInfo/{{focus.userId}}">
+								<img ng-src="{{focus.smallImg}}"></img>
+							</a>
+							<p class="headImg-name userName">{{focus.userId}}</p>
+						</li>
+					</ul>
+				</div>
+				<hr>
+				<div>
+					<p>粉丝:<span class="person-num">{{fans.length}}</span>人</p>
+					<ul class="list-inline">
+						<li class="mb-10" ng-repeat="fan in fans">
+							<a href="#/community/userInfo/{{fan.userId}}">
+								<img ng-src="{{fan.smallImg}}"></img>
+							</a>
+							<p class="headImg-name userName">{{fan.userId}}</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<upload-headimg-dialog></upload-headimg-dialog>
+</div>

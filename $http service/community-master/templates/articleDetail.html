@@ -1,0 +1,89 @@
+<div class="wrap">
+	<div class="header">
+		<pub-nav></pub-nav>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-9">
+					<div>
+						<a href="javascript:void(0);">文章</a>
+						<span>>文章详情</span>
+					</div>
+					<h3 class="mt-10">{{article.title}}</h3>
+					<div>
+						<a class="custom-a-none userName" href="#/community/userInfo/{{article.userId}}">{{article.userId}}</a>
+						<span>&nbsp;&nbsp;发表于&nbsp;&nbsp;</span>
+						<span>{{article.shareDate}}</span>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div>
+						<button class="btn btn-primary" ng-class="{'disabled':!canVote}" ng-click="vote()">推荐 </button>
+						<strong>&nbsp;{{article.upNum}}&nbsp;</strong>推荐
+					</div>
+					<div class="mt-10">
+						<button class="btn btn-success" ng-class="{'disabled':!canCollect}" ng-click="collect()" ng-show="!showCancelCollected">收藏 </button>
+						<button class="btn btn-success" ng-click="cancelCollected()" ng-show="showCancelCollected">取消收藏 </button>
+						<strong>&nbsp;{{article.collectNum}}&nbsp;</strong>收藏，<strong>&nbsp;{{article.viewNum}}&nbsp;</strong>浏览
+					</div>
+					<!-- <ul class="list-unstyled">
+						<li class="mt-15 text-right">
+							<button class="btn btn-warning disabled" ng-click="focus()">浏 览 <span class="">{{question.viewNum}}</span></button>
+							
+						</li>
+					</ul> -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9">
+				<div class="article">
+					<div id="articleContent"></div>
+					<div class="q-tags">
+						<ul class="list-inline">
+							<li ng-repeat="tag in article.tags">
+								<a href="#/community" class="custom-a-none" ng-click="tagClick(tag.label)"><span class="large-tag">{{tag.label}}</span></a>
+							</li>
+						</ul>
+					</div>
+					<h4 class="discuss-area">讨论区</h4>
+					<div class="comment">
+						<div ng-repeat="comment in comments">
+							<small>回复:</small><a ng-href="#/community/userInfo/{{comment.commentedUser}}" class="custom-a-none comment-userName">{{comment.commentedUser}}</a>
+							<p ng-bind="comment.content"></p>
+							<span>{{$index + 1 | floorFilter}}</span>
+							<a ng-href="#/community/userInfo/{{comment.userId}}" class="custom-a-none comment-userName">{{comment.userId}}</a>
+							<span>{{comment.commentDate | date:"yyyy-mm-dd" | commentDateFilter}}</span>
+							<small class="reply" ng-click="replyClick(comment)">回复</small>
+							<div class="comment-line"></div>
+						</div>
+						<div ng-show="showReply">
+							<small>回复:<span class="userName">{{newComment.commentedUser}}</span><span class="closeIcon" ng-click="deleteUser()"> [×]</span></small>
+						</div>
+						<div class="row">
+							<div class="col-md-10">
+								<textarea class="comment-input" ng-model="newComment.content"></textarea>
+							</div>
+							<div class="col-md-2">
+								<button id="submitComment" class="btn btn-primary" ng-click="submitComment()">提交评论</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div>
+					<div class="first-widget-box">
+						<h4>
+							相似文章
+						</h4>
+						<ul class="list-inline li-block">
+							<li class="tag-message" ng-repeat="question in similarQuestions"><a href="#/community/question/{{question.id}}">{{question.title}}</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

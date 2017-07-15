@@ -1,0 +1,92 @@
+<div class="wrap">
+	<pub-nav></pub-nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9">
+				<div class="main-title">
+					使用UEP开发，我有话说
+					<a href="#/community/askQuestion" class="btn btn-primary">提问/分享</a>
+				</div>
+				<div class="btn-group">
+				 	<div class="btn" ng-class="{'btn-warning':activedTabId==newTabId,'btn-success':activedTabId!=newTabId}" type="button" ng-click="tabClick(newTabId)">最新的</div>
+				 	<div class="btn" ng-class="{'btn-warning':activedTabId==hotTabId,'btn-success':activedTabId!=hotTabId}" type="button" ng-click="tabClick(hotTabId)">热门的</div>
+				 	<div class="btn" ng-class="{'btn-warning':activedTabId==unsolvedTabId,'btn-success':activedTabId!=unsolvedTabId}" type="button" ng-click="tabClick(unsolvedTabId)">未解决的</div>
+				 	<div class="btn" ng-class="{'btn-warning':activedTabId==articleTabId,'btn-success':activedTabId!=articleTabId}" type="button" ng-click="tabClick(articleTabId)">分享</div>
+				</div>
+				<hr class="mb-0">
+				<div ng-show="activedTabId==newTabId">
+					<div class="question-list-item" ng-repeat="question in newQuestions">
+						<question-item></question-item>
+					</div>
+					<pagination id="1" get-page-size-action="getAllQuesPageInfo" change-page="changePage(newTabId,curPageNum)"></pagination>
+					<!-- 这里最好是不传递id，可以传递一个param对象，包含了changePage()所需要的所有参数 -->
+				</div>
+				<div ng-show="activedTabId==hotTabId">
+					<div class="question-list-item" ng-repeat="question in collectedQuestions">
+						<question-item></question-item>
+					</div>
+					<pagination id="2" get-page-size-action="getCollectedQuesPageInfo" change-page="changePage(hotTabId,curPageNum)"></pagination>
+				</div>
+				<div ng-show="activedTabId==unsolvedTabId">
+					<div class="question-list-item" ng-repeat="question in unsolvedQuestions">
+						<question-item></question-item>
+					</div>
+					<pagination id="3" get-page-size-action="getUnSolvedQuesPageInfo" change-page="changePage(unsolvedTabId,curPageNum)"></pagination>
+				</div>
+				<div ng-show="activedTabId==articleTabId">
+					<div class="question-list-item" ng-repeat="article in articles">
+						<article-item></article-item>
+					</div>
+					<pagination id="4" get-page-size-action="getAllSharePageInfo" change-page="changePage(articleTabId,curPageNum)"></pagination>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div>
+					<div class="widget-welcome">
+						<h4 class="title">
+							开发者社区公告
+						</h4>
+						<p>UEP开发技术问答和交流社区，大家互相帮助，一起切磋，共同提高。</p>
+					</div>
+				</div>
+				<div class="widget-box">
+					<input class="search-box" ng-model="searchInfo"></input>
+					<button class="btn btn-success" ng-click="searchQuestions()">搜索</button>
+				</div>
+				<!-- <div ng-controller="UserInfoController" ng-show="nav_hasLogin">
+					<div class="first-widget-box">
+						<a href="">我的收藏</a>
+						<a href="">我得提问</a>
+					</div>
+					<div class="widget-box">
+						<h4>
+							关注标签：
+						</h4>
+						<ul class="list-inline">
+							<li class="tag-label" ng-repeat="tag in userInfo.focusTags"><a href="" class="custom-a-white custom-a-none">{{tag.label}}</a></li>
+						</ul>
+					</div>
+				</div> -->
+				<div>
+					<div class="widget-box">
+						<h4>
+							{{showTitle}}
+							<!-- <a href="" style="text-decoration:none" ng-click="getAllTags()" ng-show="expendFlag">>></a> -->
+						</h4>
+						<ul class="list-inline">
+							<li class="tag-label" ng-repeat="tag in hotTags"><a href="#/community/index.html" class="custom-a-none" ng-click="tagClick(tag.name)">{{tag.name}}</a></li>
+						</ul>
+					</div>
+					<div class="widget-box">
+						<h4>
+							最近热议话题
+						</h4>
+						<ul class="list-inline li-block">
+							<li class="tag-message" ng-repeat="question in hotQuestions"><a href="#/community/question/{{question.id}}">{{question.title}}</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

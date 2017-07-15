@@ -1,0 +1,26 @@
+<hy:view>
+<div class="warp">
+	<pub-nav></pub-nav>
+	<div class="container">
+		<form name="questionForm">
+			<!-- <span>这个地方用bootstrap的dropdown,不会用啊,自己写了...</span> -->
+			<div class="btn-group mb-10">
+			  	<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="dropdown-label">提问</span><span class="caret"></span>
+			  	</button>
+				<ul class="dropdown-menu" role="menu"">
+				  	<li><a href="javascript:void(0)" ng-click="ask()">提问</a></li>
+				  	<li><a href="javascript:void(0)" ng-click="share()">分享</a></li>
+				</ul>
+			</div>
+			<input ng-model="question.title" class="title-input mb-10" type="text" placeholder="{{placeholder}}"></input>
+			<!-- <expander></expander> -->
+			<question-tags></question-tags>
+			
+			<script id="editor" type="text/plain" style="width:100%;height:500px;"></script>
+		</form>
+		<div class="mt-10 text-right">
+			<button id="publishQuestion" class="btn btn-primary" ng-click="publishQuestion()">{{publishButton}}</button>
+		</div>
+	</div>
+</div>
+</hy:view>

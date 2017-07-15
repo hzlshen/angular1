@@ -1,0 +1,23 @@
+<div class="rank">
+	
+	<div class="viewNum"><span>{{article.viewNum}}</span><span class="rank-block">浏览</span></div>
+	<div class="{{article.status_class}} votesNum"><span>{{article.voteNum}}</span><span class="rank-block">投票</span></div>
+</div>
+<div class="article-summary">
+	<div class="author">
+		<span>{{article.askDate || article.shareDate}}</span>来自
+		<a href="#/community/userInfo/{{article.userId}}">{{article.userId}}</a>
+		<div ng-class="{'q-flag':!article.flag,'a-flag':article.flag}" ng-show="showDiff"> </div>
+	</div>
+	<div class="content">
+		<div class="title">
+			<a class="custom-a-brown" href="#/community/article/{{article.shareId}}" ng-show="article.flag">{{article.title}}</a>
+			<a class="custom-a-brown" href="#/community/question/{{article.id}}" ng-show="!article.flag">{{article.title}}</a>
+		</div>
+		<ul class="list-inline tag-list">
+			<li ng-repeat="tag in article.tags">
+				<a href="#/community/index.html" class="custom-a-none tag" ng-click="tagClick(tag.label)">{{tag.label}}</a>
+			</li>
+		</ul>
+	</div>
+</div>

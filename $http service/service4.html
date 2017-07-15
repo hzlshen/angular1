@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>AngularJS学习</title>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+</head>
+<body>
+<div ng-controller="myCtrl">
+    <button ng-click="getPrivate()">按钮一</button>
+    <button ng-click="getPUbluc()">按钮二</button>
+</div>
+<div ng-controller = "myCtrl2">
+</div>
+</body>
+<script type="text/javascript">
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope, myService) {
+        $scope.getPrivate = function() {
+            alert(myService.getPrivate());
+        };
+        $scope.getPUbluc = function() {
+            alert(myService.variable);
+        };
+    });
+    app.controller('myCtrl2', function($scope, myService) {
+    });
+    app.service('myService', function() {
+        console.log('instance myService');
+        var privateValue = "I am Private";
+        this.variable = "This is public";
+        this.getPrivate = function() {
+            return privateValue;
+        };
+    });
+</script>
+</html>

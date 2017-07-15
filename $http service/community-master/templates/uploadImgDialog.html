@@ -1,0 +1,35 @@
+<div class="modal fade" id="uploadImgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog upload-img-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <h4 class="modal-title">设置头像</h4>
+          </div>
+          <div class="modal-body">
+              <div class="container">
+				<div class="row">
+					<div class="col-md-9">
+						<div class="img-original">
+				          	<img class="cropper" src="img/picture-1.jpg" alt="Picture">
+				        </div>
+              		</div>
+              		<div class="col-md-3">
+              			<div class="eg-preview clearfix">
+				          	<div class="preview preview-md"></div>
+				          	<div class="preview preview-sm"></div>
+				        </div>
+              		</div>
+              	</div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <label class="btn btn-primary" for="inputImage" title="Upload image file" ng-controller="selectImgController">
+		          <input class="hide" id="inputImage" name="file" type="file" accept="image/*">选择图片</input>
+		      </label>
+              <button type="button" class="btn btn-info" ng-click="zoomIn()">Zoom In</button>
+        	  <button type="button" class="btn btn-info" ng-click="zoomOut()">Zoom Out</button>
+              <button type="button" class="btn btn-primary" ng-click="submitImg()">提交图片</button>
+          </div>
+        </div>
+    </div>
+</div>

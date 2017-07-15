@@ -1,0 +1,23 @@
+<div class="rank">
+	<div class="votesNum"><span>{{question.voteNum}}</span><span class="rank-block">投票</span></div>
+	<div class="{{question.status_class}} answersNum">
+		<span>{{question.answerNum}}</span><span class="rank-block">{{question.status}}</span>
+	</div>
+	<div class="viewNum"><span>{{question.viewNum}}</span><span class="rank-block">浏览</span></div>
+</div>
+<div class="summary">
+	<div class="author">
+		<span>{{question.askDate}}</span>来自
+		<a href="#/community/userInfo/{{question.userId}}">{{question.userId}}</a>
+	</div>
+	<div class="content">
+		<div class="title">
+			<a class="custom-a-brown" href="#/community/question/{{question.id}}">{{question.title}}</a>
+		</div>
+		<ul class="list-inline tag-list">
+			<li ng-repeat="tag in question.tags">
+				<a href="#/community/index.html" class="custom-a-none tag" ng-click="tagClick(tag.label)">{{tag.label}}</a>
+			</li>
+		</ul>
+	</div>
+</div>

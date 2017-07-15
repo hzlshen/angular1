@@ -1,0 +1,55 @@
+<div ng-controller="navController" class="container mt-15">
+	<div id="nav" class="navbar navbar-default">
+		<div class="container-fluid">
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="../pubclient/index.jsp">首页</a>
+				</li>
+				<li>
+					<a href="../pubclient/platform.do">开发平台</a>
+				</li>
+				<li>
+					<a href="../pubclient/modelRelation.do">运行模块</a>
+				</li>
+			 	<li>
+			 		<a href="../pubclient/requirementInfoClient.do">需求|反馈</a>
+				</li>
+				<li>
+					<a href="../pubclient/recRequirementInfoClient.do">开发计划</a>
+				</li>
+				<li>
+					<a href="../pubclient/askAction.do">Q&A</a>
+				</li>
+				<li>
+					<a href="../community/index.html" ng-click="communityClick()">开发者社区</a>
+				</li>
+				<li>
+					<a href="../pubclient/documentFile.do">文档</a>
+				</li>
+				<li>
+					<a href="../pubclient/videoAction.do">视频</a>
+				</li>
+				<li>
+					<a href="../pubclient/license.do">license</a>
+				</li>
+				<li>
+					<a href="../pubclient/uepCertificate.do">UEP认证</a>
+				</li>
+			</ul>
+		
+			<ul class="nav navbar-nav navbar-right">
+				<li ng-show="!nav_hasLogin">
+					<button type="button" class="btn btn-default navbar-btn" ng-click="login()">直接登录</button>
+				</li>
+				
+				<li ng-show="nav_hasLogin" class="nav-username">
+					<a href="#/community/userInfo/{{nav_userName}}" class="nav-username">{{nav_userName}}</a>
+				</li>
+				<li ng-show="nav_hasLogin">
+					<button type="button" class="btn btn-default navbar-btn" ng-click="logout()">注销</button>
+				</li>
+				<li style="width:15px"></li>
+			</ul>
+		</div>
+	</div>
+</div>

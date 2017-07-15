@@ -1,0 +1,76 @@
+<div class="wrap">
+	<div class="header">
+		<pub-nav></pub-nav>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-9">
+					<div>
+						<a href="#/community/">问答</a>
+						<span>>问答详情</span>
+					</div>
+					<h3 class="mt-10">{{question.title}}</h3>
+					<div>
+						<a class="custom-a-none userName" href="#/community/userInfo/{{question.userId}}">{{question.userId}}</a>
+						<span>&nbsp;&nbsp;提问于&nbsp;&nbsp;</span>
+						<span>{{question.askDate}}</span>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<ul class="list-unstyled">
+						<li class="mt-15 text-right">
+							<button class="btn btn-warning disabled" ng-click="focus()">浏 览 <span class="">{{question.viewNum}}</span></button>
+							<button class="btn btn-primary" ng-class="{'disabled':!canCollect}" ng-click="collect()" ng-show="!showCancelCollected">收 藏 <span class="">{{question.collectNum}}</span></button>
+							<button class="btn btn-primary" ng-click="cancelCollected()" ng-show="showCancelCollected">取消收藏 <span class="">{{question.collectNum}}</span></button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9">
+				<div class="question">
+					<div class="sidebar console-button">
+						<div class="vote-btn vote-btn-up" ng-click="addVote()" data-toggle="tooltip" data-placement="top" title="问题对人有帮助，内容完整，我也想知道答案"></div>
+						<div class="vote-count" ng-bind="question.voteNum"></div>
+						<div class="vote-btn vote-btn-down" ng-click="subVote()" data-toggle="tooltip" data-placement="bottom" title="问题没有实际价值，缺少关键内容，没有改进余地"></div>
+					</div>
+					<div class="content">
+						<div id="questionContent" class="ml-60"></div>
+						<div class="q-tags ml-60">
+							<ul class="list-inline">
+								<li ng-repeat="tag in question.tags">
+									<a href="#/community" class="custom-a-none" ng-click="tagClick(tag.label)"><span class="large-tag">{{tag.label}}</span></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="answers" ng-controller="AnswersController">
+					<div class="answers-Num">{{answers.length}}个回答</div>
+					<div class="answer" ng-repeat="answer in answers" ng-modal="answer">
+						<answer-item answer="answer" after-set-accept="afterSetAccept()"></answer-item>
+					</div>
+					<h3>撰写答案</h3>
+					<script id="answerEditor" type="text/plain" style="width:100%;height:150px;"></script>
+					<div class="text-right  mt-15">
+						<button id="submitAnswer" class="btn btn-primary" ng-click="submitAnswer()">提交回答</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div>
+					<div class="first-widget-box">
+						<h4>
+							相似问题
+						</h4>
+						<ul class="list-inline li-block">
+							<li class="tag-message" ng-repeat="question in similarQuestions"><a href="#/community/question/{{question.id}}">{{question.title}}</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

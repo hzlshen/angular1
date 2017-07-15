@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head lang="en" ng-app="app">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/angular.min.js"></script>
+</head>
+<body>
+    <p ng-controller="MainCtrl">{{aPerson.name}} - {{aPerson.country}}</p>
+    <div ng-controller="SecondCtrl">
+        {{aPerson.name}} - {{aPerson.country}}
+        <button ng-click="updateIt()">Update it</button>
+    </div>
+    <script>
+        app = angular.module('app', []);
+
+        app.controller('MainCtrl', function($scope, personService) {
+            $scope.aPerson = personService.getById(1);
+        });
+
+        app.controller('SecondCtrl', function($scope, personService) {
+            $scope.aPerson = personService.getById(1);
+
+            $scope.updateIt = function() {
+                $scope.aPerson.update();
+            };
+        });
+
+        // Our class
+        function Person( json ) {
+            angular.extend(this, json);
+        }
+
+        Person.prototype = {
+            update: function() {
+                // Update it (With real code :P)
+                this.name = "Dave";
+                this.country = "Canada";
+            }
+        };
+
+        Person.getById = function( id ) {
+            // Do something to fetch a Person by the id
+            return new Person({
+                name: "Jesus",
+                country: "Spain"
+            });
+        };
+
+        // Our factory
+        app.factory('personService', function() {
+            return {
+                getById: Person.getById
+            };
+        });
+    </script>
+
+</body>
+</html>
