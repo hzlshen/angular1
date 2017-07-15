@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<style>
+    .btn-file {
+        /* 上传按钮*/
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        outline: none;
+        background: white;
+        cursor: inherit;
+        display: block;
+    }
+</style>
+<script src="js/angular.min.js"></script>
+<link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" />
+
+<body ng-controller="UploaderController">
+    <span class="btn btn-success btn-file"> 选择图片
+        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+        <input type="file" file-model="myFile" />
+    </span>
+
+<div class="col-md-12" style="margin-top: 20px;">
+    <img ng-src="{{imageSrc}}" class="img-rounded" style="max-width:300px;max-height:300px; padding: 0px;" />
+    <!--<img ng-src="{{imageSrc}}" class="img-circle" style="max-width:300px;max-height:300px; padding: 0px;" />-->
+    <!--<img ng-src="{{imageSrc}}" class="img-thumbnail" style="max-width:300px;max-height:300px;" />-->
+</div>
+
+<script>
+    var app = angular.module('myApp', []);
+
+    app.controller('UploaderController', function($scope, fileReader) {
+        console.log("controller");
+        $scope.getFile = function() {
+            fileReader.readAsDataUrl($scope.file, $scope)
+                    .then(function(result) {
+                        $scope.imageSrc = result;
+                    });
+        };
+
+    });
+
+    app.directive('fileModel', ['$parse', function($parse) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs, ngModel) {
+                var model = $parse(attrs.fileModel);
+                var modelSetter = model.assign;
+                element.bind('change', function(event) {
+                    scope.$apply(function() {
+                        modelSetter(scope, element[0].files[0]);
+                    });
+//附件预览
+                    console.log("directive");
+                    scope.file = (event.srcElement || event.target).files[0];
+                    scope.getFile();
+                });
+            }
+        };
+    }]);
+
+    app.factory('fileReader', ["$q", "$log", function($q, $log) {
+        var onLoad = function(reader, deferred, scope) {
+            return function() {
+                scope.$apply(function() {
+                    deferred.resolve(reader.result);
+                });
+            };
+        };
+
+        var onError = function(reader, deferred, scope) {
+            return function() {
+                scope.$apply(function() {
+                    deferred.reject(reader.result);
+                });
+            };
+        };
+
+        var getReader = function(deferred, scope) {
+            var reader = new FileReader();
+            reader.onload = onLoad(reader, deferred, scope);
+            reader.onerror = onError(reader, deferred, scope);
+            return reader;
+        };
+        console.log("factory");
+        var readAsDataURL = function(file, scope) {
+            var deferred = $q.defer();
+            var reader = getReader(deferred, scope);
+            reader.readAsDataURL(file);
+            return deferred.promise;
+        };
+
+        return {
+            readAsDataUrl: readAsDataURL
+        };
+    }])
+</script>
+</body>
+</html>

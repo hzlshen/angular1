@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/angular.min.js"></script>
+    <link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" />
+
+    <!--<style>
+        .btn-file{
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-file input[type=file]{
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+    </style>-->
+</head>
+<body ng-controller="UploaderController">
+
+<div class="dbx-uploader" data-uploadindex="{{uploaderIndex}}">
+    <a class="uploader-text-area" href="javascript:;" ng-click="chooseFiles($event)">选择文件</a>
+    <input style="display:none;" type="file">
+    <span class="upload">＋</span>
+    <div ng-transclude></div>
+    <div class="save_pic">
+        <div class="isMulti">
+            <label class="isMultiTitle">是否支持多图上传:</label>
+            <input ng-click="multiY($event,uploaderIndex)" ng-checked="options.multi==='1'" name="isMulti{{uploaderIndex}}" type="radio"><label>是</label>
+            <input ng-click="multiN($event,uploaderIndex)" ng-checked="options.multi==='0'" name="isMulti{{uploaderIndex}}" type="radio"><label>否</label>
+        </div>
+        <div ng-show="isUploading" class="progress">
+            <div class="progress-bar" role="progressbar" style="min-width: 2em;" ng-style="{width:percent+'%'}">
+                {{percent}}%
+            </div>
+        </div>
+        <div class="imgs-area uploading-imgs-area" ng-if="tmpImgSrcs.length!==0&&options.type==='img'||options.type==='image'">
+            <div>
+                <div class="upload_pic_check">即将上传的图片预览:</div>
+                <div ng-repeat="src in tmpImgSrcs track by $index">
+                    <img ng-src="{{src}}">
+                    <label>{{file.files[$index].name}}</label>
+                </div>
+
+            </div>
+
+            <button class="dbx-uploader-submit" ng-click="beginUpload($event)">开始上传</button>
+        </div>
+        <div class="imgs-area uploading-imgs-area" ng-if="options.type!=='img'&&options.type!=='image'&&file.files&&file.files.length!==0">
+
+            <div>
+                <div>即将上传的文件名称:</div>
+                <div ng-repeat="item in file.files">
+                    <!--<img ng-src="{{src}}">-->
+                    <label>{{item.name}}</label>
+                </div>
+
+            </div>
+            <button class="dbx-uploader-submit" ng-click="beginUpload($event)">开始上传</button>
+        </div>
+        <div class="imgs-area uploaded-imgs-area" ng-if="imgSrcs.length!==0&&options.type==='img'||options.type==='image'">
+            <div class="success_upl">上传成功的图片预览:</div>
+            <div class="picture" ng-repeat="src in imgSrcs track by $index">
+                <img ng-src="{{src}}">
+                <label>{{uploadedFileNames[$index]}}</label>
+            </div>
+        </div>
+        <div class="imgs-area uploading-imgs-area" ng-if="options.type!=='img'&&options.type!=='image'&&uploadedFileNames.length!==0">
+
+            <div>
+                <div>上传完成的文件名称:</div>
+                <div ng-repeat="name in uploadedFileNames track by $index">
+                    <label>{{name}}</label>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <script>
+
+        var app = angular.module('myApp',[]);
+        app.controller('UploaderController', function ($scope, fileReader) {
+            console.log("controller");
+            $scope.getFile = function () {
+                fileReader.readAsDataUrl($scope.file,$scope)
+                        .then(function (result) {
+                            $scope.imageSrc = result;
+                        });
+            }
+        });
+
+
+        app.directive('upload',['$rootScope','$templateCache',function($rootScope,$templateCache){
+
+
+            return {
+                restrict:'EA',
+                template:$templateCache.get('directives.tpl/upload.html'),
+                scope:{
+                    multi:'@',
+                    url:'@',
+                    type:'@',
+                    ext:'@',
+                    maxsize:'@',
+                    width:'@',
+                    height:'@',
+                    btntext:'@',
+                    key:'@',
+                    srcmodel:'@',
+                    srckey:'@',
+                    auto:'@',
+                    responseDataReader:'@'
+                },
+                transclude:true,
+                replace:true,
+                controller:['$scope','baseService','$rootScope','$element',function($scope,baseService,$rootScop,$element){
+                    var bs=$scope.bs=baseService;
+
+                    var $file=$element.find(':file').first();
+                    if(typeof($rootScope.uploaderIndex)==='undefined'){
+                        $rootScope.uploaderIndex=0;
+                    }
+                    $rootScope.uploaderIndex=$rootScope.uploaderIndex+1;
+                    var uploaderIndex=$scope.uploaderIndex=$rootScope.uploaderIndex;//当前directive的实例的索引
+
+                    var options={};
+                    if(baseService.isNull($scope['url'])){
+                        alert('url属性是必须的');
+                        return false;
+                    }
+                    var defaultOptions={
+                        multi:'1',
+                        ext:'*',
+                        maxsize:'1gb',
+                        type:'*',
+                        width:'*',
+                        height:'*',
+                        key:'file',
+                        srcmodel:'',
+                        srckey:'',
+                        auto:'0',
+                        responseDataReader:''
+                    }
+                    for(var k in defaultOptions){
+                        var v=defaultOptions[k];
+                        if(baseService.isNull($scope[k])){
+                            options[k]=v;
+                        }else{
+                            options[k]=$scope[k];
+                        }
+                    }
+                    $scope.multi='1';
+                    $scope.options=options;
+                    console.log('options is:',options);
+
+                    console.log('scopeeeeeeee is:',$scope);
+                    //console.log('parent scope',$scope.$parent);
+                    //$scope.$parent.CONFIG.UNPRIZE_PIC='1';
+
+                    var isUploadImg=$scope.isUploadImg=['img','image'].indexOf(options.type.toLowerCase())!==-1;
+                    var isUploadExcel=$scope.type.toLowerCase()==='excel';
+
+                    function initUploaderStatus(){
+                        $scope.percent=0;
+                        $scope.isUploading=false;
+                        $scope.imgSrcs=[];
+                        $scope.uploadedFileNames=[];
+                        $scope.tmpImgSrcs=[];//待上传的图片的src
+                    }
+                    initUploaderStatus();
+                    $scope.file=$file.get(0);
+
+                    //初始化文件域的多选状态
+                    var init=function(){
+                        var nv=options.multi;
+                        console.log('nv is:',nv);
+
+                        if(isUploadImg){
+                            $file.attr('accept','image/*');
+                        }
+                        if(options.multi==='1'){
+                            console.log('$file is:',$file);
+                            $file.attr('multiple','multiple');
+                        }else{
+                            $file.removeAttr('multiple');
+                        }
+                    }
+
+
+
+                    init();
+                    $scope.multiY=function(e,index){
+                        //var $file=$(e.target).closest('.dbx-uploader').find(':file').first();
+                        $file.attr('multiple','multiple');
+                        if(index===uploaderIndex){
+                            $scope.multi='1';
+                        }
+
+                    }
+                    $scope.multiN=function(e,index){
+                        //var $file=$(e.target).closest('.dbx-uploader').find(':file').first();
+                        $file.removeAttr('multiple');
+                        if(index===uploaderIndex){
+                            $scope.multi='0';
+                        }
+
+                    }
+                    $file.on('change',function(){
+                        $rootScope.$emit('selectedFileChange',$scope,options,$element);
+                        var files=$file.get(0).files,len=files.length;
+                        if(len===0){
+                            return false;
+                        }
+                        console.log('files is:',files);
+                        //检查扩展名
+                        if(options.ext!=='*'){
+                            var exts=options.ext.split(',');
+                            for(var i=0;i<len;i++){
+                                var file=files[i];
+                                var ext=file.name.split('.').reverse()[0];
+                                if(exts.indexOf(ext)===-1){
+                                    var str='所选择的文件中包含扩展名非法的文件，文件扩展名必须为'+$scope.ext;
+                                    alert(str);
+                                    $rootScope.$emit('selectedFileExtInvalid',str,$scope,options,$element);
+                                    $file.val('');
+                                    files.length=0;
+
+                                    return false;
+                                }
+                            }
+                        }
+
+                        //检查大小是否合法
+                        var tmpMaxSize=options.maxsize;
+                        tmpMaxSize=tmpMaxSize.toLowerCase();
+                        var maxsize=parseInt(tmpMaxSize,10);
+                        var map={
+                            gb:1024*1024*1024,
+                            mb:1024*1024,
+                            kb:1024,
+                            b:1
+                        };
+                        for(var i in map){
+                            if(tmpMaxSize.indexOf(i)!==-1){
+                                maxsize=maxsize*(map[i]);
+                                break;
+                            }
+                        }
+                        for(var i=0;i<len;i++){
+                            var file=files[i];
+                            if(file.size>maxsize){
+                                var str='所选择的文件中包含大小超过最大值的文件，文件大小上限为'+tmpMaxSize;
+                                console.warn(str);
+                                $rootScope.$emit('selectedFileSizeInvalid',str,$scope,options,$element);
+                                $file.val('');
+                                files.length=0;
+
+                                return false;
+                            }
+                        }
+
+                        if(options.multi!=='1'){
+                            initUploaderStatus();
+                            $scope.$apply();
+                        }
+                        //读取图片文件
+                        if(isUploadImg){
+                            if(options.auto==='1'){
+                                $scope.beginUpload();
+                                return false;
+                            }
+
+
+                            var renderIndex=0;
+                            $scope.tmpImgSrcs=[];
+                            var allowRead=true;
+                            $.each(files,function(k,file){
+
+                                var reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload=function(e){
+                                    var result=this.result;
+                                    $('<img>')
+                                            .attr({
+                                                src:result
+                                            }).load(function(){
+                                                if(!allowRead){
+                                                    return false;
+                                                }
+                                                var w=this.width,h=this.height;
+
+                                                console.log('w and h:',w,h)
+
+                                                //检查图片的宽高
+                                                var errmsg='',width=options.width,height=options.height;
+                                                console.log('width and height',width,height)
+                                                if(width!=='*'&&parseInt(width,10)!==w){
+                                                    errmsg+='选择的图片中包含宽度不合法的图片，像素必须为'+width;
+                                                }
+                                                if(height!=='*'&&parseInt(height,10)!==h){
+                                                    errmsg+='\n选择的图片中包含长度不合法的图片，像素必须为'+width;
+                                                }
+                                                console.log('errmsg:',errmsg,errmsg==='');
+                                                if(errmsg===''){
+                                                    renderIndex++;
+                                                    $scope.tmpImgSrcs.push(result);
+                                                    $scope.$apply();
+                                                }else{
+                                                    allowRead=false;
+                                                    $file.val('');
+                                                    files.length=0;
+                                                    $rootScope.$emit('imgSizeInvalid',errmsg,$scope,options,$element);
+                                                    $scope.$apply();
+                                                }
+
+
+                                            })
+                                }
+                            })
+                        }else{
+                            $scope.$apply();
+                            if(options.auto==='1'){
+                                $scope.beginUpload();
+                            }
+
+                        }
+
+                    });
+
+
+
+
+
+                    $scope.chooseFiles=function(e){
+                        $file.click();
+                        //$(e.target).closest('.dbx-uploader').find(':file').first().click();
+                    }
+                    $scope.beginUpload=function(e){
+                        if($scope.isUploading===true){
+                            return false;
+                        }
+                        //var $file=$(e.target).closest('.dbx-uploader').find(':file').first(),files=$file.get(0).files;
+                        var files=$file.get(0).files;
+
+                        if(files.length===0){
+                            return false;
+                        }
+                        var formData = new FormData();
+                        var len=files.length;
+                        if(len===1){
+                            console.log('key is:',options.key);
+                            formData.append(options.key,files[0]);
+                        }else if(len>1){
+                            for(var i in files){
+                                formData.append('file'+(i+1),files[i]);
+                            }
+                        }
+                        $scope.isUploading=true;
+
+                        var xhr = new XMLHttpRequest();
+
+
+                        $rootScope.$emit('uploadstart',$scope,options,$element);
+                        xhr.open('post', $scope.url, true);
+
+                        xhr.upload.onprogress = function(e) {
+                            if (e.lengthComputable) {
+                                var percentage = parseInt((e.loaded / e.total) * 100,10);
+                                $scope.percent=percentage;
+                                $rootScope.$emit('uploading',$scope,options,$element)
+                                $scope.$apply();
+                            }
+                        };
+
+                        xhr.onerror = function(e) {
+                            var str='An error occurred while submitting the form. Maybe your file is too big';
+                            console.warn(str);
+                            $rootScope.$emit('uploadError',$scope,options,$element);
+                        };
+
+                        var ngModelArr=options.srcmodel.split('.'),arr0=ngModelArr.length>0?(ngModelArr[0]):null;
+                        xhr.onload = function(){
+                            for(var i in $scope.tmpImgSrcs){
+                                $scope.imgSrcs.push($scope.tmpImgSrcs[i]);
+
+                            }
+                            for(var i= 0,len=$file.get(0).files.length;i<len;i++){
+                                var item=$file.get(0).files[i];
+                                $scope.uploadedFileNames.push(item.name);
+                            }
+                            $scope.tmpImgSrcs=[];
+                            $file.val('');
+
+                            $scope.$apply();
+                            var res=JSON.parse(this.responseText);
+                            console.log('res is:',res);
+
+
+                            if(arr0!==null){
+                                var $pScope=bs.getTargetScopeByModel($scope,options.srcmodel);
+                                if(isUploadImg){
+
+
+
+                                    var resSrc=bs.getDataByModel(res,options.srckey);
+                                    console.log('res src is:',resSrc);
+                                    if(resSrc!==null){
+                                        if((options.multi==='0')&&($pScope!==null)){
+
+
+                                            bs.setDataByModel($pScope,options.srcmodel,resSrc);
+                                        }
+                                    }
+                                }
+                                else if(isUploadExcel){
+                                    if(options.responseDataReader!==''){
+                                        var excelReader=bs.getDataByModel($pScope,options.responseDataReader);
+                                        if($pScope!==null){
+                                            bs.setDataByModel($pScope,options.srcmodel,excelReader(res,bs.getDataByModel($pScope,options.srcmodel)));
+                                        }
+                                        //console.log('excelReader is:',excelReader);
+                                    }
+
+                                }
+                            }
+
+                            $rootScope.$emit('uploadSuccess',res,$scope,options,$element);
+
+                            setTimeout(function(){
+                                $scope.isUploading=false;
+                                $scope.percent=0;
+                                $scope.$apply();
+                            },1000);
+                        }
+                        console.log('file upload form data is:',formData);
+                        xhr.send(formData);
+                    }
+
+                }]
+            }
+        }])
+
+
+
+        /*var app = angular.module('myApp',[]);
+
+        app.controller('UploaderController', function ($scope, fileReader) {
+            console.log("controller");
+            $scope.getFile = function () {
+                fileReader.readAsDataUrl($scope.file,$scope)
+                        .then(function (result) {
+                            $scope.imageSrc = result;
+                        });
+            }
+        });
+
+        app.directive('fileModel',['$parse', function ($parse) {
+            return {
+                restrict:'A',
+                link: function (scope,element,attrs,ngModel) {
+                    var model = $parse(attrs.fileModel)
+                    var modelSetter = model.assign;
+                    element.bind('change', function (event) {
+                        scope.$apply(function () {
+                            modelSetter(scope,element[0].files[0]);
+                        });
+                        console.log('directive');
+
+                        //附件预览
+                        scope.file = (event.srcElement  ||　event.target).files[0];
+                        scope.getFile();
+                    });
+                }
+            };
+        }]);
+
+        app.factory('fileReader',['$q','$log', function ($q, $log) {
+            var onLoad = function (reader, deferred, scope) {
+                return function () {
+                    scope.$apply(function () {
+                        deferred.resolve(reader.result);
+                    });
+                };
+            };
+
+            var onError = function (reader, derferred, scope) {
+                return function () {
+                    scope.$apply(function () {
+                        derferred.reject(reader.result);
+                    });
+                };
+            };
+
+            var getReader = function (derferred, scope) {
+                var reader = new FileReader();
+                reader.onload = onLoad(reader,derferred,scope);
+                reader.onerror = onError(reader,derferred,scope);
+                return reader;
+            };
+
+            console.log('factory');
+            var readAsDataURL = function (file, scope) {
+                var derferred = $q.defer();
+                var reader = getReader(derferred,scope);
+                reader.readAsDataURL(file);
+                return derferred.promise;
+            };
+
+            return {
+                readAsDataUrl:readAsDataURL
+            };
+
+
+        }])
+
+*/
+
+    </script>
+
+
+</body>
+</html>

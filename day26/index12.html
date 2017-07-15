@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+  <!--  <script src="js/angular.min.js"></script>-->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+-->
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-route.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body ng-controller="hospitalControllers">
+
+<div style="clear:both;">
+    <img ng-src="{{imageSrc}}" class="image"/>
+</div>
+<div style="clear:both;">
+    <button class="file uploadLogo">
+        <input type="file" accept="image/jpeg" hosfile-model="myFile"/>
+    </button>
+</div>
+<script>
+    
+    var app = angular.module('myApp',[]);
+    app.controller('hospitalControllers', function ($scope, fileReader) {
+        $scope.getFile = function () {
+            console.log("file: " + JSON.stringify($scope.file));
+            if(/\.(jpg|jpeg)$/i.test($scope.file[0].name) && ($scope.file[0].size/1024) < 1024){
+//读取图片内容显示在页面
+                fileReaderInHospital.readAsDataUrl($scope.file[0], $scope)
+                        .then(function(result) {
+                            console.log("image result: " + result);
+                            $scope.imageSrc = result;
+                        });
+
+//上传LOGO图片
+                var fd = new FormData();
+                angular.forEach($scope.file,function(file){
+                    fd.append('file',file);
+                })
+                $http({
+                    method : 'POST',
+                    url : '/imageserver/images',
+                    data: fd,
+                    headers:{
+                        'Content-Type': undefined
+                    },
+                    transformRequest: angular.identity
+                })
+                        .success(function(data, status, headers, config) {
+                            if(status == 201){
+                                console.log("上传LOGO图片成功");
+//截取最后的图片uuid
+                                var location = headers("Location");
+                                var uuid = location.split("/").pop();
+                                $scope.imageUuid = uuid;
+                                console.log("image uuid: " + $scope.imageUuid);
+                            }else{
+                                Message.alert({
+                                    msg: '上传LOGO图片失败',
+                                    title: '上传LOGO图片',
+                                    btnok: '确定',
+                                    btncl:'取消'
+                                });
+                            }
+
+                        })
+                        .error(function(data, status, headers, config) {
+                            Message.alert({
+                                msg: '上传LOGO图片失败',
+                                title: '上传LOGO图片',
+                                btnok: '确定',
+                                btncl:'取消'
+                            });
+                        });
+            }else{
+                $scope.imageSrc = "";
+                Message.alert({
+                    msg: "LOGO只能是JPG或JPEG格式，不得超过1M！",
+                    title:"上传失败提示",
+                    btnok: '确定',
+                    btncl:'取消'
+                });
+            }
+        };
+    })
+
+    app.directive('hosfileModel', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs, ngModel) {
+                var model = $parse(attrs.hosfileModel);
+                var modelSetter = model.assign;
+                element.bind('change', function(event){
+                    scope.$apply(function(){
+                        modelSetter(scope, element[0].files[0]);
+                    });
+//附件预览
+                    scope.file = (event.srcElement || event.target).files;//[0]
+                    scope.getFile();
+                });
+            }
+        };
+    }]);
+
+    app.factory('fileReaderInHospital', ['$q', '$log', function($q, $log){
+        var onLoad = function(reader, deferred, scope) {
+            return function () {
+                scope.$apply(function () {
+                    deferred.resolve(reader.result);
+                });
+            };
+        };
+
+        var onError = function (reader, deferred, scope) {
+            return function () {
+                scope.$apply(function () {
+                    deferred.reject(reader.result);
+                });
+            };
+        };
+
+        var getReader = function(deferred, scope) {
+            var reader = new FileReader();
+            reader.onload = onLoad(reader, deferred, scope);
+            reader.onerror = onError(reader, deferred, scope);
+            return reader;
+        };
+
+        var readAsDataURL = function (file, scope) {
+            var deferred = $q.defer();
+            var reader = getReader(deferred, scope);
+            reader.readAsDataURL(file);
+            return deferred.promise;
+        };
+
+        return {
+            readAsDataUrl: readAsDataURL
+        };
+    }]);
+    
+</script>
+</body>
+</html>

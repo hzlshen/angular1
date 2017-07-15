@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html ng-app="fileUpload">
+<head>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>AngularJs</title>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/ng-file-upload.min.js"></script>
+    <script type="text/javascript" src="js/ng-file-upload-shim.min.js"></script>
+    <script type="text/javascript" src="js/ng-img-crop.js"></script>
+    <style type="text/css">
+        .cropArea {background: #E4E4E4; overflow: hidden; width:500px; height:350px; }
+        form .progress {line-height: 15px; }
+        .progress {display: inline-block; width: 100px; border: 3px groove #CCC; }
+        .progress div {font-size: smaller; background: orange; width: 0; }
+
+        img-crop {width: 100%; height: 100%; display: block; position: relative; overflow: hidden; }
+        img-crop canvas {display: block; position: absolute; top: 50%; left: 50%; outline: none; -webkit-tap-highlight-color: rgba(255, 255, 255, 0);}
+    </style>
+
+
+</head>
+<body ng-controller="MyCtrl">
+<form name="myForm">
+    <div>Crop Image and Upload</div>
+    <button ngf-select ng-model="picFile" accept="image/*">Select Picture</button>
+    <div ngf-drop ng-model="picFile" ngf-pattern="image/*" class="cropArea">
+        <img-crop image="picFile  | ngfDataUrl" result-image="croppedDataUrl" ng-init="croppedDataUrl=''"></img-crop>
+    </div>
+    <div><img ng-src="{{croppedDataUrl}}" /></div>
+    <button ng-click="upload(croppedDataUrl, picFile.name)">Submit</button>
+        <span class="progress" ng-show="progress >= 0">
+          <div style="width:{{progress}}%" ng-bind="progress + '%'"></div>
+        </span>
+    <span ng-show="result">Upload Successful</span>
+    <span class="err" ng-show="errorMsg">{{errorMsg}}</span>
+</form>
+
+<script type="text/javascript">
+    var app = angular.module('fileUpload', ['ngFileUpload', 'ngImgCrop']);
+    app.controller('MyCtrl', ['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout) {
+        $scope.upload = function (dataUrl, name) {
+            Upload.upload({
+                url: 'https://angular-file-upload-cors-srv.appspot.com/upload',
+                data: {
+                    file: Upload.dataUrltoBlob(dataUrl, name)
+                }
+            }).then(function (response) {
+                $timeout(function () {
+                    $scope.result = response.data;
+                });
+            }, function (response) {
+                if (response.status > 0) $scope.errorMsg = response.status
+                + ': ' + response.data;
+            }, function (evt) {
+                $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
+            });
+        }
+    }]);
+</script>
+
+
+</body>
+</html>

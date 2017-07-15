@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+  <!--  <script src="js/angular.min.js"></script>-->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+
+<div ng-app="app" ng-controller="appCtrl as ac">
+    <label>Select a comma delimited CSV file:-</label>
+    <input id="filePicker" type="file" on-file-change="ac.onFileChange(event)" ng-click="ac.clearInput($event)"/>{{ac.fileName}}
+</div>
+<div id="output"></div>
+<script>
+    (function (angular, document) {
+
+        angular
+                .module("app.directives", [])
+                .directive("onFileChange", ["$parse", function ($parse) {
+                    return {
+                        restrict: "A",
+                        link: function (scope, ele, attrs) {
+                            // onFileChange is a reference to the same function which you would define
+                            // in the controller. So that you can keep your logic in the controller.
+                            var onFileChange = $parse(attrs.onFileChange.split(/\(/)[0])(scope)
+                            ele.on("change", onFileChange)
+                            ele.removeAttr("on-file-change")
+                        }
+                    }
+                }])
+
+        angular
+                .module("app.services", [])
+                .service("Parse", ["$q", function ($q) {
+                    var Parse = this
+                    Parse.csvAsGrid = function (file) {
+                        return $q(function (resolve, reject) {
+                            try {
+                                Papa.parse(file, {
+                                    complete: function (results) {
+                                        resolve(results.data)
+                                    }
+                                })
+                            } catch (e) {
+                                reject(e)
+                            }
+                        })
+                    }
+                }])
+
+        angular
+                .module("app", ["app.directives", "app.services"])
+                .controller("appCtrl", ["$scope", "Parse", function ($scope, Parse) {
+                    var ac = this
+                    ac.fileName = ""
+                    ac.onFileChange = function (event) {
+                        if (!event.target.files.length) {
+                            return
+                        }
+                        Parse.csvAsGrid(event.target.files[0]).then(outputAsTable)
+                    }
+
+                    ac.clearInput = function (event) {
+                        var input = angular.element(event.target)
+                        input.val("")
+                        document.getElementById("output").innerHTML = ""
+                    }
+
+                    function outputAsTable(grid) {
+                        var table = ['<table border="1">']
+                        grid.map(function (row) {
+                            table.push('<tr>')
+                            row.map(function (cell) {
+                                table.push('<td>' + cell.replace(/["']/g, "") + '</td>')
+                            })
+                            table.push('</tr>')
+                        })
+                        table.push('</table>')
+                        document.getElementById("output").innerHTML = table.join("\n")
+                    }
+                }])
+
+    })(angular, document)
+</script>
+</body>
+</html>

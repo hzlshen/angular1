@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/angular.min.js"></script>
+    <link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css" />
+
+    <!--<style>
+        .btn-file{
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-file input[type=file]{
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+    </style>-->
+</head>
+<body ng-controller="myController">
+
+<div file-input="file" on-change="readFile()"></div>
+    <script>
+
+        var app = angular.module('myApp',[]);
+        app.controller('myController', ['$scope', 'fileReader', function ($scope, fileReader) {
+            $scope.readFile = function () {
+                fileReader.readAsDataUrl($scope.file, $scope).then(function (result) {
+                    if (result) {
+                        $scope.license = result;
+                    }
+                });
+            };
+        }])
+
+        app.directive('fileInput', function ($parse) {
+            return {
+                restrict: "EA",
+                template: '<input type="file" class="uploadfile"  accept="image/jpeg;capture=camera"  />',
+                replace: true,
+                link: function (scope, element, attrs) {
+
+                    var modelGet = $parse(attrs.fileInput);
+                    var modelSet = modelGet.assign;
+                    var onChange = $parse(attrs.onChange);
+
+                    var updateModel = function () {
+                        scope.$apply(function () {
+                            modelSet(scope, element[0].files[0]);
+                            onChange(scope);
+                        });
+                    };
+
+                    element.bind('change', updateModel);
+                }
+            };
+        })
+
+        app.factory('fileReader', ['$q', function ($q) {
+
+            var onLoad = function (reader, deferred, scope) {
+                return function () {
+                    scope.$apply(function () {
+                        deferred.resolve(reader.result);
+                    });
+                };
+            };
+
+            var onError = function (reader, deferred, scope) {
+                return function () {
+                    scope.$apply(function () {
+                        deferred.reject(reader.result);
+                    });
+                };
+            };
+
+            var onProgress = function (reader, scope) {
+                return function (event) {
+                    scope.$broadcast("fileProgress", {
+                        total: event.total,
+                        loaded: event.loaded
+                    });
+                };
+            };
+
+            var getReader = function (deferred, scope) {
+                var reader = new FileReader();
+                reader.onload = onLoad(reader, deferred, scope);
+                reader.onerror = onError(reader, deferred, scope);
+                reader.onprogress = onProgress(reader, scope);
+                return reader;
+            };
+
+            var readAsDataURL = function (file, scope) {
+                var deferred = $q.defer();
+
+                var reader = getReader(deferred, scope);
+                reader.readAsDataURL(file);
+
+                return deferred.promise;
+            };
+
+            return {
+                readAsDataUrl: readAsDataURL
+            };
+        }])
+
+
+
+
+    </script>
+
+
+</body>
+</html>

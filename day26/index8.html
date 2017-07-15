@@ -1,0 +1,130 @@
+<!doctype html>
+<html ng-app="myApp">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <title>Image preview example</title>
+    <script src="js/angular.min.js"></script>
+</head>
+
+<body ng-controller="myCtrl">
+<div class="panel panel-default" ng-repeat="n in [] | range:4">
+    <div class="form-group">
+        <label>
+            Upload Discount Picture {{n+1}}
+        </label>
+        <input type="file" id="file-input" ng-file-select="onFileSelect($files)" file-model="discountImageBox[$index]" destination='discountImageBox{{n+1}}' accept=".jpg,.png,.gif,.jpeg" />
+    </div>
+    <script>
+        var app = angular.module('myApp',[]);
+        app.controller('myCtrl','$scope', function ($scope) {
+            $scope.getFile = function(destination) {
+                fileReader.readAsDataUrl($scope.file, $scope).then(function(result) {
+                    switch(destination){
+                        case 'fileToUpload' :
+                            $scope.lt_logo_image = result;
+                            break;
+                        case 'discountImageBox1':
+                            $scope.discountImageBox[0] = result;
+                            // $scope.discountImageBox = result;
+                            break;
+                    }
+                });
+            };
+
+        })
+
+        app.directive('fileModel', ['$parse', function($parse) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs) {
+                    var model = $parse(attrs.fileModel);
+                    var modelSetter = model.assign;
+                    element.bind('change', function() {
+                        scope.$apply(function() {
+                            modelSetter(scope, element[0].files[0]);
+                        });
+                    });
+                }
+            };
+        }]);
+
+        app.directive("ngFileSelect", function() {
+            return {
+                link: function($scope, el) {
+                    el.on('click',function(){
+                        this.value = '';
+                    });
+                    el.bind("change", function(e) {
+                        $scope.file = (e.srcElement || e.target).files[0];
+                        if($scope.file){
+                            if($scope.file.size < 6015220) {
+                                $scope.getFile(el.attr('destination'));
+                            } else {
+                                alert('File too large. File must be less than 6 MB.');
+                                document.getElementById('file-input').value = null;
+                            }
+                        }
+                    })
+                }
+            }})
+
+
+        (function (module) {
+
+
+            var fileReader = function ($q, $log) {
+
+                var onLoad = function(reader, deferred, scope) {
+                    return function () {
+                        scope.$apply(function () {
+                            deferred.resolve(reader.result);
+                        });
+                    };
+                };
+
+                var onError = function (reader, deferred, scope) {
+                    return function () {
+                        scope.$apply(function () {
+                            deferred.reject(reader.result);
+                        });
+                    };
+                };
+
+                var onProgress = function(reader, scope) {
+                    return function (event) {
+                        scope.$broadcast("fileProgress",
+                                {
+                                    total: event.total,
+                                    loaded: event.loaded
+                                });
+                    };
+                };
+
+                var getReader = function(deferred, scope) {
+                    var reader = new FileReader();
+                    reader.onload = onLoad(reader, deferred, scope);
+                    reader.onerror = onError(reader, deferred, scope);
+                    reader.onprogress = onProgress(reader, scope);
+                    return reader;
+                };
+
+                var readAsDataURL = function (file, scope) {
+                    var deferred = $q.defer();
+
+                    var reader = getReader(deferred, scope);
+                    reader.readAsDataURL(file);
+
+                    return deferred.promise;
+                };
+
+                return {
+                    readAsDataUrl: readAsDataURL
+                };
+            };
+
+            module.factory("fileReader",
+                    ["$q", "$log", fileReader]);
+        }(angular.module("myApp")));
+    </script>
+</body>
+</html>
