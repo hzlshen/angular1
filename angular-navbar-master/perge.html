@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html ng-app="myapp">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        *{margin: 0px; padding: 0px;}
+        .nav{width:100%; background:#8ec31f; height: 80px;}
+        .nav ul{width:1000px; margin: 0px auto;}
+        .nav ul li{float:left; text-align:center; width:100px; line-height:80px; list-style: none;}
+        .nav ul li a{ color:#fff; width:90px; display:block; font-weight:bold; font-size:16px; text-decoration: none;}
+        .nav ul li a:hover{background:#f5a61d;}
+        .nav ul .active a,.nav ul .active a:hover{ color:#f5a61d; font-weight:bold; border-top:2px solid #f5a61d; height:78px; background:#fff;}
+    </style>
+    <!--<script type="text/javascript" src="js/jquery-1.11.3.js"></script>-->
+    <script type="text/javascript" src="js/angular.js"></script>
+    <script src="js/angular-route.min.js"></script>
+</head>
+<body>
+<nav class="nav">
+    <ul>
+        <li ng-class="{active:nativeId=='#/11'}"><a native href="#/temps/11">首页</a></li>
+        <li ng-class="{active:nativeId=='#/22'}"><a native href="#/temps/22">企业简介</a></li>
+        <li ng-class="{active:nativeId=='#/33'}"><a native href="#/temps/33">企业动态</a></li>
+        <li ng-class="{active:nativeId=='#/44'}"><a native href="#/temps/44">产品展示</a></li>
+        <li ng-class="{active:nativeId=='#/55'}"><a native href="#/temps/55">实用案例</a></li>
+        <li ng-class="{active:nativeId=='#/contact'}"><a native href="#/">联系我们</a></li>
+    </ul>
+    <div ui-view>
+    </div>
+</nav>
+
+<script>
+    var myapp = angular.module("myapp",[]);
+    myapp.run(['$rootScope',function($rootScope){
+        $rootScope.nativeId=getCurrentNativeId();
+        function getCurrentNativeId(){
+            var str = "#/index";
+            var href=window.location.href;
+            var index = href.indexOf("#/");
+            if(index != -1){
+                str = href.substring(index,href.length);
+            }
+            return str;
+        }
+    }])
+    myapp.config(function($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.otherwise('/home');
+        $stateProvider
+                .state('home', {//首页路由                   //这里指向ui-sref="***"  可用“.”来对应“/”的链接内容！
+                    url: 'home',                            //这里指向监控地址栏#/后面的内容   {可带参数}
+                    views: {
+                        '': {
+                            templateUrl: 'home.html'    //这里指向使用的父级模板
+                        },
+                        '11@home': {
+                            templateUrl: 'tmpls/11.html'       //这里指向父级模板下使用的模板
+                        },
+                        '22@home': {
+                            templateUrl: 'tmpls/22.html'
+                        },
+                        '33@home': {
+                            templateUrl: 'tmpls/33.html'
+                        },
+                        '44@home': {
+                            templateUrl: 'tmpls/44.html'
+                        },
+                        '55@home': {
+                            templateUrl: 'tmpls/55.html'
+                        }
+                    }
+                })
+    })
+    myapp.directive('native',['$rootScope',function($rootScope,$cookies){
+                return{
+                    restrict:'A',
+                    link:function(scope,element,attrs){
+                        element.bind('click', function () {
+                            scope.$apply(function(){
+                                $rootScope.nativeId = attrs.href;
+                            });
+                        })
+                    }
+                }
+            }]);
+
+</script>
+</body>
+</html>

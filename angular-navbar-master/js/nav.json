@@ -1,0 +1,69 @@
+[
+    {
+        "label": "债券",
+        "children": [
+            {
+                "label": "可转债",
+                "children": [
+                    {"label": "可转债溢价率分析","link":"#"},
+                    {"label": "可转债NS定价","link":"#"},
+                    {"label": "可转债归因分析","link":"#"},
+                    {"label": "可转债套利实时监控","link":"#"}
+                ]
+            },
+            {
+                "label": "信用债",
+                "children": [
+                    {"label": "交易所债券监控","link":"#"}
+                ]
+            },
+            {
+                "label": "利率债","link":"#",
+                "children": []
+            },
+            {
+                "label": "国债期货",
+                "children": [
+                    {"label": "国债期货表现分析","link":"#"},
+                    {"label": "国债期货实时套利监控","link":"#"},
+                    {"label": "IRR历史时间序列查询","link":"#"},
+                    {"label": "IRR实时监控","link":"#"}
+                ]
+            }
+        ]
+    },
+    {
+        "label": "股票",
+        "children": [
+            {
+                "label": "基本面分析",
+                "children": [
+                    {"label": "上市公司基本面数据查看","link":"#"}
+                ]
+            },
+            {
+                "label": "量化选股策略",
+                "children": []
+            }
+        ]
+    },
+    {
+        "label": "宏观",
+        "children": [
+            {
+                "label": "宏观数据",
+                "children": [
+                    {"label": "宏观数据概览","link":"#"}
+                ]
+            },
+            {
+                "label": "宏观经济预测",
+                "children": []
+            },
+            {
+                "label": "宏观经济和大类资产表现",
+                "children": []
+            }
+        ]
+    }
+]

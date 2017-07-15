@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/1.css"/>
+    <script src="js/angular.js"></script>
+</head>
+<body>
+    <section ng-app="myApp">
+        <div class="tabs tabs-style" ng-controller="TabController as tab">
+            <nav>
+                <ul>
+                    <li ng-class="{'current':tab.isSet(1)}">
+                        <a href="#" ng-click="tab.setCurrent(1)"><span>Home</span></a></li>
+                    <li ng-class="{'current':tab.isSet(2)}">
+                        <a href="#" ng-click="tab.setCurrent(2)"><span>Work</span></a></li>
+                    <li ng-class="{'current':tab.isSet(3)}">
+                        <a href="#" ng-click="tab.setCurrent(3)"><span>Blog</span></a></li>
+                    <li ng-class="{'current':tab.isSet(4)}">
+                        <a href="#" ng-click="tab.setCurrent(4)"><span>About</span></a></li>
+                    <li ng-class="{'current':tab.isSet(5)}">
+                        <a href="#" ng-click="tab.setCurrent(5)"><span>Contact</span></a></li>
+                </ul>
+            </nav>
+            <div class="content">
+                <section id="section-1" ng-show="tab.isSet(1)">
+                    <p>1</p>
+                </section>
+                <section id="section-2" ng-show="tab.isSet(2)">
+                    <p>2</p>
+                </section>
+                <section id="section-3" ng-show="tab.isSet(3)">
+                    <p>3</p>
+                </section>
+                <section id="section-4" ng-show="tab.isSet(4)">
+                    <p>4</p>
+                </section>
+                <section id="section-5" ng-show="tab.isSet(5)">
+                    <p>5</p>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        angular.module('myApp', [])
+                .controller('TabController', function() {
+                    this.current = 1;
+
+                    this.setCurrent = function (tab) {
+                        this.current = tab;
+                    };
+
+                    this.isSet = function(tab) {
+                        return this.current == tab;
+                    };
+                });
+    </script>
+
+</body>
+</html>

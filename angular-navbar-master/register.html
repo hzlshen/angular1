@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="indexApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/angular.js"></script>
+    <script src="js/angular-ui-router.min.js"></script>
+</head>
+<body ng-controller="indexController">
+<a ui-sref="router1">show Ui-router11</a>
+<a ui-sref="router2">show Ui-router22</a>
+<div ui-view></div>
+<script>
+    angular.module('indexApp',['ui.router'])
+            .controller('indexController',function(){
+
+            })
+            .config(function($stateProvider,$urlRouterProvider){
+                $urlRouterProvider
+                        .otherwise('router1');
+                $stateProvider
+                        .state('router1',{
+                            url:'/router1',
+                            templateUrl:'router1.html'
+                        })
+                        .state('router2',{
+                            url:'/router2',
+                            templateUrl:'router2.html'
+                        })
+            })
+</script>
+</body>
+</html>

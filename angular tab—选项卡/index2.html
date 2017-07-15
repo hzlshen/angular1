@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/2.css"/>
+</head>
+<body>
+<script src="js/angular.js"></script>
+<script src="js/angular-touch.min.js"></script>
+<!--//angularjs的一个移动端touch事件库-->
+
+<div ng-app='myApp' ng-controller="myController">
+    <div class="type-tabs">
+        <div ng-repeat="item in [1,2,3,4]" ng-click="changeIndex($index)">Tab{{item}}</div>
+    </div>
+    <div class="guid-bar">
+        <div class="guid-bar-content" style="left:{{ 25*activeIndex}}%"></div>
+    </div>
+    <div class="tab-content" ng-swipe-right="swipeRight()" ng-swipe-left="swipeLeft()">
+        <div class="tab-content-inner" style="left:{{ -100*activeIndex}}%">
+            <div class="tab-content-item" ng-repeat="item in [1,2,3,4]" >
+                <br /><br /><br /><br />
+                <h1>Tab{{item}}
+                </h1></div>
+        </div>
+    </div>
+
+    <script>
+        var myApp=angular.module('myApp',['ngTouch']);
+        myApp.controller('myController',function($scope){
+            $scope.activeIndex=0;
+            $scope.changeIndex=function(index){
+                $scope.activeIndex=index;
+            };
+            $scope.swipeLeft=function(){
+                $scope.activeIndex=++$scope.activeIndex;
+                $scope.check();
+            };
+            $scope.swipeRight=function(){
+                $scope.activeIndex=--$scope.activeIndex;
+                $scope.check();
+            };
+            $scope.check=function(){
+                if($scope.activeIndex>3)
+                    $scope.activeIndex=0;
+                if($scope.activeIndex<0)
+                    $scope.activeIndex=3;
+            }
+        })
+    </script>
+</div>
+</body>
+</html>

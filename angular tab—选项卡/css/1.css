@@ -1,0 +1,97 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #e7ecea;
+    font-weight: 600;
+    font-family: 'Raleway', Arial, sans-serif;
+    text-align: center;
+}
+a {
+    color: #2CC185;
+    text-decoration: none;
+    outline: none;
+}
+a:hover {
+     color: #74777b;
+ }
+.tabs {
+    position: relative;
+    width: 100%;
+    margin: 30px auto 0 auto;
+}
+nav ul{
+    position: relative;
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    list-style: none;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+nav ul li{
+    flex: 1;
+}
+nav ul li .current a {
+    color: #74777b;
+}
+a {
+    display: block;
+    position: relative;
+    overflow : hidden;
+    line-height: 2.5;
+}
+span {
+    vertical-align: middle;
+    font-size: 1.5em;
+}
+.content {
+    position: relative;
+}
+section {
+    /* display: none; */
+    margin: 0 auto;
+    max-width: 1200px;
+}
+section.content-current{
+    /*display: block;*/
+}
+section.content-current p{
+    color: rgba(40,44,42, 0.4);
+    margin: 0;
+    padding: 1.75em 0;
+    font-weight: 900;
+    font-size: 5em;
+    line-height: 1;
+}
+.tabs-style nav{
+    /* background: rgba(255,255,255,0.4); */
+}
+.tabs-style nav ul li a{
+    overflow: visible;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    -webkit-transition: color 0.2s;
+    transition: color 0.2s;
+}
+.tabs-style nav ul li.current a :after,
+::before{
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: solid transparent;
+}
+.tabs-style nav ul li.current a:after{
+    margin-left: -10px;
+    border-width: 10px;
+    border-top-color: #e7ecea;
+}
+.tabs-style nav ul li.current a:before {
+    margin-left: -11px;
+    border-width: 11px;
+    border-top-color: rgba(0,0,0,0.2);
+}

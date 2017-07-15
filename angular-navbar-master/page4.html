@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>多级动态导航菜单</title>
+    <meta name="description" content="多级动态导航菜单">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="fragment" content="!" />
+
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body ng-app="page4">
+
+<div class="container">
+    <div class="row" ng-controller="NavbarCtrl">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">量化投资平台</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li ng-repeat="a1 in navbar" class="dropdown" ng-class="{active:isActive(a1.label)}">
+                        <a href="?{{ a1.label }}" class="dropdown-toggle" data-toggle="dropdown">{{ a1.label }} <b class="caret"></b></a>
+                        <ul class="dropdown-menu menu-top">
+                            <li ng-repeat="a2 in a1.children" class="dropdown-submenu">
+                                <a tabindex="-1" href="?{{ a2.label }}">{{ a2.label }}</a>
+                                <ul ng-show="a2.children.length>0" class="dropdown-menu">
+                                    <li ng-repeat="a3 in a2.children">
+                                        <a href="?{{ a3.label }}" ng-click="go(a3.link)">{{ a3.label }}</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/angular/angular.min.js"></script>
+<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/bower_components/angular-route/angular-route.min.js"></script>
+<script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+
+<script src="/js/app.js"></script>
+
+</body>
+</html>

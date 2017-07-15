@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>多级导航菜单</title>
+    <meta name="description" content="多级导航菜单">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="fragment" content="!" />
+
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body ng-app="page2">
+
+<div class="container">
+    <div class="row" ng-controller="NavbarCtrl">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">多级菜单导航</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Link</a></li>
+                    <li><a href="#">Link</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Multi Level <b class="caret"></b></a>
+                        <ul class="dropdown-menu menu-top">
+                            <li><a href="#">Level 1</a></li>
+                            <li class="dropdown-submenu"> <a tabindex="-1" href="#">More options</a>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" href="#">Level 2</a>
+                                    </li>
+                                    <li class="dropdown-submenu"> <a href="#">More..</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Level 3</a>
+                                            </li>
+                                            <li><a href="#">Level 3</a>
+                                            </li>
+                                            <li class="dropdown-submenu"> <a href="#">More..</a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="#">Level 4</a>
+                                                    </li>
+                                                    <li><a href="#">Level 4</a>
+                                                    </li>
+                                                    <li class="dropdown-submenu"> <a href="#">More..</a>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a href="#">Level 5</a>
+                                                            </li>
+                                                            <li><a href="#">Level 5</a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+
+                                                </ul>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                    <li><a href="#">Level 2</a>
+                                    </li>
+                                    <li><a href="#">Level 2</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a href="#">Level 1</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/angular/angular.min.js"></script>
+<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/bower_components/angular-route/angular-route.min.js"></script>
+<script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+
+<script src="/js/app.js"></script>
+
+</body>
+</html>
