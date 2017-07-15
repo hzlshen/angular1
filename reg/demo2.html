@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<!--<input onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')"
+       onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))"
+       id="Text4" name="Text4">-->
+<!--<input onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')" onkeydown="if(event.keyCode==13)event.keyCode=9">-->
+<!--<input type="text"/>-->
+<!--<input type="button" value="tijiao" onclick="checkStr()"/>-->
+<input type="text" name="name"/>
+<input type="button" value="baoccun" onclick="isChinese(name)"/>
+<script>
+    /*function getNum(str){
+        var str = "奥特曼打小怪兽";
+        var patt1= new RegExp(/^ue400-\u9fa5/);
+        var result = patt1.test(str);
+        if(result == true){
+            document.write(str);
+        }else{
+            console.log("您输入内容非汉字，请重新输入！");
+        }
+    }
+    getNum();
+*/
+
+   /* function isChn(str){
+        var reg = /^[u4E00-u9FA5]+$/;
+        if(!reg.test(str)==reg){
+            console.log("不是中文!");
+        }
+            console.log("heheda");
+
+    }*/
+/*
+            function checkStr(str){
+                var re1 = new RegExp("^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[a-zA-Z0-9])*$");
+                if (!re1.test(str)){
+                    alert("否");
+                    return false;
+                }
+                alert("是");
+                return true;
+            }
+*/
+
+/*
+    function isChinese(name) //中文值检测
+    {
+        if(name.length == 0)
+            return false;
+        for(i = 0; i < name.length; i++) {
+            if(name.charCodeAt(i) > 128)
+                return true;
+        }
+        return false;
+    }*/
+
+
+
+    /*function isChinaName(name) {
+        var pattern = /^[\u4E00-\u9FA5]{1,6}$/;
+        return pattern.test(name);
+    }
+
+    function isChn(str){
+        var reg = /^[u4E00-u9FA5]+$/;
+        if(!reg.test(str)){
+            return false;
+        }
+        return true;
+    }*/
+
+
+
+//    ng版
+//    ng-pattern=”/^[0-9]*[1-9][0-9]*$/”
+
+
+
+    // 检查是否为有效的真实姓名，只能含有中文或大写的英文字母
+    function isValidTrueName(strName){
+        var str = Trim(strName);   //判断是否为全英文大写或全中文，可以包含空格
+        var reg = /^[A-Z u4E00-u9FA5]+$/;
+        if(reg.test(str)){
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>
